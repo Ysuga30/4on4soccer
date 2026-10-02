@@ -509,11 +509,11 @@ const G={mode:'title',time:MATCH_TIME,score:[0,0],players:[],ball:null,
 
 /* ---- characters (one may join the team in place of the regular player at his position) ---- */
 const CHARS=[
-  {id:'garde',name:'ガルド',pos:0,role:'キーパー',ability:'背が1.1倍高く、キーパーの反応が1.095倍速い',hair:'long',len:9,hairCol:'#3a2618',h:1.1,reach:1.1,gk:1.095},
-  {id:'sion',name:'シオン',pos:1,role:'中盤・左',ability:'走る速さ1.208倍。ボールを持つと普通の選手の走る速さ',hair:'long',len:13,hairCol:'#c35cbc',spd:1.208,drib:1},
-  {id:'reiji',name:'レイジ',pos:2,role:'中盤・右',ability:'「停」で8秒間試合を止め、自分の位置を動かせる',hair:'glasses',hairCol:'#232a45',stop:true},
-  {id:'kaito',name:'カイト',pos:3,role:'フォワード',ability:'キックの速さと飛距離が1.08倍。左カーブが1.5倍曲がり、蹴った直後は2倍曲がる',hair:'center',hairCol:'#f0cc55',curveL:1.33,kickF:1.08},
-  {id:'gou',name:'ゴウ',pos:3,role:'フォワード',ability:'シュートだけ1.388倍の速さで蹴れる（赤く光る）',hair:'spiky',hairCol:'#16171b',shot:1.388}];
+  {id:'garde',name:'ガルド',pos:0,role:'キーパー',ability:'背が高く、キーパーの反応が速い',hair:'long',len:9,hairCol:'#3a2618',h:1.1,reach:1.1,gk:1.125},
+  {id:'sion',name:'シオン',pos:1,role:'中盤・左',ability:'走る速さが速い。ボールを持っても、普通の選手が走る速さ',hair:'long',len:13,hairCol:'#c35cbc',spd:1.208,drib:1},
+  {id:'reiji',name:'レイジ',pos:2,role:'中盤・右',ability:'「停」で試合を少しの間止めて、自分の位置を動かせる',hair:'glasses',hairCol:'#232a45',stop:true},
+  {id:'kaito',name:'カイト',pos:3,role:'フォワード',ability:'キックの速さと飛距離がやや上がる。左カーブがよく曲がり、蹴った直後はさらに曲がる',hair:'center',hairCol:'#f0cc55',curveL:1.33,kickF:1.08},
+  {id:'gou',name:'ゴウ',pos:3,role:'フォワード',ability:'シュートだけ速く蹴れる（赤く光る）',hair:'spiky',hairCol:'#16171b',shot:1.38}];
 // Kaito: 1.33x base bend plus 1.55x for the first 0.15 s -> about 1.5x the usual bend overall, twice as much right after the kick
 const CURVE_EARLY_T=0.15,CURVE_EARLY_F=1.55,STOP_T=8,STOP_R=BR*2*10,KICK_BLEND=0.06,GK_SAFE=1.6;
 
