@@ -114,7 +114,7 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 #level{align-items:center;background:linear-gradient(90deg,rgba(10,17,28,.96),rgba(10,17,28,.88) 60%,rgba(10,17,28,.74))}
 .lv-wrap{width:100%;box-sizing:border-box;padding-inline:calc(var(--sl) + max(24px, var(--lw) * .06)) calc(var(--sr) + 24px);display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--k) * 12px)}
 .lv-title{margin:0;font-family:var(--f-display);font-weight:400;font-size:calc(var(--k) * 34px);line-height:1}
-.lv-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:calc(var(--k) * 10px);width:100%;max-width:900px}
+.lv-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:calc(var(--k) * 10px);width:100%;max-width:900px}
 .lv{display:flex;flex-direction:column;align-items:flex-start;gap:calc(var(--k) * 6px);padding:calc(var(--k) * 12px);border-radius:12px;border:1.5px solid rgba(243,246,239,.18);background:rgba(243,246,239,.05);text-align:left;min-width:0;transition:background-color .12s,border-color .12s}
 .lv .st{font-size:calc(var(--k) * 15px);letter-spacing:.04em;color:var(--amber);white-space:nowrap}
 .lv .st i{font-style:normal;color:rgba(243,246,239,.24)}
@@ -123,6 +123,28 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 .lv.hot small{color:#cdb8ff}
 .lv.last{border-color:var(--amber)}
 .lv:active{background:rgba(255,182,39,.18)}
+/* 最強: locked behind two crossed chains until "強い" is beaten by 2+ goals */
+.lv.boss{position:relative;overflow:hidden;border-color:rgba(255,90,110,.55);background:linear-gradient(160deg,rgba(215,38,61,.22),rgba(75,20,40,.18))}
+.lv.boss .st{color:#ff5a6e}
+.lv.boss small{color:#ffb3bd}
+.lv.boss.last{border-color:var(--amber)}
+.lv.boss.locked{background:rgba(243,246,239,.04);border-color:rgba(243,246,239,.16)}
+.lv.boss.locked>.st,.lv.boss.locked>b{opacity:.28}
+.lv.boss.locked>small{visibility:hidden}
+.lv-hint{margin:0;font-size:calc(var(--k) * 12px);color:#ffb3bd;min-height:1.4em}
+.lv.boss:active{background:rgba(215,38,61,.3)}
+.lv.boss.locked:active{background:rgba(243,246,239,.04)}
+.lv .lock{position:absolute;inset:0;pointer-events:none;display:none}
+.lv .lock svg{width:100%;height:100%;display:block}
+.lv .lk-t{position:absolute;left:0;right:0;top:60%;text-align:center;font-family:var(--f-display);font-size:calc(var(--k) * 13px);letter-spacing:.14em;color:var(--chalk);text-shadow:0 2px 0 rgba(0,0,0,.6),0 0 10px rgba(0,0,0,.7);display:none;pointer-events:none}
+.lv.boss.locked .lock,.lv.boss.locked .lk-t{display:block}
+.lv.boss.breaking .lock{display:block;animation:chainOff .75s cubic-bezier(.5,0,.8,.4) forwards}
+.lv.boss.breaking .lk-t{display:block;animation:lkOff .4s ease-out forwards}
+.lv.boss.shake{animation:lvShake .38s ease-in-out}
+@keyframes chainOff{0%{transform:none;opacity:1}25%{transform:scale(1.04)}100%{transform:translateY(70%) rotate(6deg);opacity:0}}
+@keyframes lkOff{to{opacity:0;transform:scale(1.4)}}
+@keyframes lvShake{0%,100%{transform:none}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.note.unlock{color:var(--amber);font-weight:800;font-size:calc(var(--k) * 14px)}
 .lvtag{margin:0;font-size:calc(var(--k) * 12px);color:var(--muted)}
 .lvtag b{color:var(--amber);font-weight:400;letter-spacing:.04em}
 
@@ -202,7 +224,7 @@ button.chc:active{background:rgba(255,182,39,.18)}
 .st-top span{font-weight:800;font-size:calc(var(--k) * 13px)}
 .st-top .st-s{font-family:var(--f-led);font-weight:400;font-size:calc(var(--k) * 20px);color:var(--ice);min-width:1.2ch;text-align:right}
 #banner.stop .big{color:var(--ice);text-shadow:0 5px 0 #1b4d66,0 0 26px rgba(0,0,0,.45)}
-@media (prefers-reduced-motion:reduce){#banner.show{animation:none;opacity:1}#banner.out{animation:none;opacity:0}.btn,.cta{transition:none}}
+@media (prefers-reduced-motion:reduce){#banner.show{animation:none;opacity:1}#banner.out{animation:none;opacity:0}.btn,.cta{transition:none}.lv.boss.shake,.lv.boss.breaking .lock,.lv.boss.breaking .lk-t{animation:none;opacity:0}}
 </style>
 </head>
 <body>
@@ -267,7 +289,7 @@ button.chc:active{background:rgba(255,182,39,.18)}
   <section id="level" class="overlay" hidden>
     <div class="lv-wrap">
       <div class="lv-head">
-        <div><p class="eyebrow">キックオフの前に</p><h2 class="lv-title">CPUの強さ</h2></div>
+        <div><h2 class="lv-title">CPUの強さ</h2></div>
         <button id="bRoulette" class="sw" type="button" role="switch" aria-checked="false"><span>キャラ ルーレット</span><span class="sw-t"><i></i></span><span class="sw-v" id="rlV">なし</span></button>
       </div>
       <div class="lv-row">
@@ -276,7 +298,9 @@ button.chc:active{background:rgba(255,182,39,.18)}
         <button class="lv" type="button" data-lv="3"><span class="st">★★★<i>☆☆</i></span><b>普通</b></button>
         <button class="lv hot" type="button" data-lv="4"><span class="st">★★★★<i>☆</i></span><b>やや強い</b></button>
         <button class="lv hot" type="button" data-lv="5"><span class="st">★★★★★</span><b>強い</b></button>
+        <button class="lv boss locked" type="button" data-lv="6" id="lvBoss" aria-disabled="true"><span class="st">★★★★★</span><b>最強</b><small id="bossSub">「強い」に2点差以上で勝つと解放</small><span class="lock" id="bossLock" aria-hidden="true"></span><span class="lk-t" aria-hidden="true">LOCKED</span></button>
       </div>
+      <p class="lv-hint" id="lvHint" aria-live="polite"></p>
       <button id="bLvBack" class="ghost" type="button">戻る</button>
     </div>
   </section>
@@ -540,7 +564,10 @@ function teamOf(t){return t===0?G.players.slice(0,NP):G.players.slice(NP,NP*2);}
 function resetMatch(h0,level,chars,h1){
   G.level=level||3;
   G.chars=chars?[chars[0]||null,chars[1]||null]:[null,null];
-  G.players=[];for(const t of [0,1])for(let i=0;i<NP;i++){const p=mkPlayer(t,i),c=G.chars[t];if(c&&c.pos===i)p.ch=c;G.players.push(p);}
+  // 最強 (level 6): red fields a full squad - Garde in goal, Sion and Reiji in midfield, Kaito or Gou up front
+  G.squad=[null,G.level===6?[CHARS[0],CHARS[1],CHARS[2],CHARS[Math.random()<0.5?3:4]]:null];
+  if(G.level===6)G.chars[1]=null;
+  G.players=[];for(const t of [0,1])for(let i=0;i<NP;i++){const p=mkPlayer(t,i),c=G.chars[t],sq=G.squad[t];if(sq)p.ch=sq[i]||null;else if(c&&c.pos===i)p.ch=c;G.players.push(p);}
   G.ball={x:0,y:0,vx:0,vy:0,owner:null,last:0,spin:0,spinW:0,spinBT:0,spinBF:1,fA:1,fK:1,inNet:false,dox:0,doy:0,doT:0,fire:false,shot:false,curveId:-1,aim:null,prot:0,kickT:9,lastKicker:null};
   G.score=[0,0];G.time=MATCH_TIME;G.endT=0;G.stop=null;G.stopUsed=[false,false];
   [!!h0,!!h1].forEach((on,t)=>{const hm=G.hum[t],i=hm.input;hm.active=on;hm.ctrl=0;hm.kickBuf=0;hm.curveBuf=0;hm.curveBufT=0;hm.passReq=null;
@@ -980,14 +1007,17 @@ function aiKick(p,a,side,shot){const f=()=>{kick(p,a,null,shot);if(side&&!G.ball
 function aiKickTo(p,x,y,err,side,shot){const o=ballFrom(p);aiKick(p,Math.atan2(y-o.y,x-o.x)+(Math.random()*2-1)*err,side,shot);}
 function doPass(p,ps,err){if(ps.side)aiKick(p,ps.a+(Math.random()*2-1)*err,ps.side);else aiKickTo(p,ps.x,ps.y,err);}
 /* ---- curved-ball planning (CPU levels 4-5) ---- */
-function simKick(x,y,a,side,maxT){
-  const out=[],w0=side*CURVE_W,h=0.025;let vx=Math.cos(a)*KICK_V,vy=Math.sin(a)*KICK_V;
+// c / shot: when a 最強 player kicks, the path is predicted with his gift (Gou's shot speed, Kaito's power and left curl)
+function simKick(x,y,a,side,maxT,c,shot){
+  const out=[],pw=(shot&&c&&c.shot?c.shot:1)*(c&&c.kickF||1),fA=c&&c.kickF||1;
+  const special=!!(c&&c.curveL&&side<0),w0=side*CURVE_W*(special?c.curveL:1),h=0.025;let bt=special?CURVE_EARLY_T:0;
+  let vx=Math.cos(a)*KICK_V*pw,vy=Math.sin(a)*KICK_V*pw;
   for(let t=0;t<=maxT;t+=0.05){
     out.push({x,y,t});
     for(let k=0;k<2;k++){
-      const s=hyp(vx,vy);let ns=s;if(s>0){ns=Math.max(0,s-(BALL_A+BALL_K*s)*h);vx*=ns/s;vy*=ns/s;}
-      if(w0){const w=w0*(ns/KICK_V)*h,cw=Math.cos(w),sw=Math.sin(w),nx=vx*cw-vy*sw;vy=vx*sw+vy*cw;vx=nx;}
-      x+=vx*h;y+=vy*h;
+      const s=hyp(vx,vy);let ns=s;if(s>0){ns=Math.max(0,s-(BALL_A*fA+BALL_K*s)*h);vx*=ns/s;vy*=ns/s;}
+      if(w0){const w=w0*(bt>0?CURVE_EARLY_F:1)*(ns/KICK_V)*h,cw=Math.cos(w),sw=Math.sin(w),nx=vx*cw-vy*sw;vy=vx*sw+vy*cw;vx=nx;}
+      bt-=h;x+=vx*h;y+=vy*h;
     }
     if(x<-GOAL_D||x>W+GOAL_D||y<BR||y>H-BR||hyp(vx,vy)<20){out.push({x,y,t:t+0.05});break;}
   }
@@ -1002,7 +1032,7 @@ function pathClear(path,opps){
 function curvePassTo(p,tx,ty,opps){
   const o=ballFrom(p),base=Math.atan2(ty-o.y,tx-o.x);let best=null;
   for(const side of [-1,1])for(let k=1;k<=9;k++){
-    const a=base-side*k*0.06,path=simKick(o.x,o.y,a,side,1.8);
+    const a=base-side*k*0.06,path=simKick(o.x,o.y,a,side,1.8,bossOn(p.team)?p.ch:null,false);
     let hit=-1,md=1e9;for(let i=0;i<path.length;i++){const d=hyp(path[i].x-tx,path[i].y-ty);if(d<md){md=d;hit=i;}}
     if(md>28)continue;
     const c=pathClear(path.slice(0,hit+1),opps);
@@ -1012,12 +1042,14 @@ function curvePassTo(p,tx,ty,opps){
 }
 function bestShotCurve(p,opps){
   const o=ballFrom(p),gx=oppGX(p.team),base=Math.atan2(H/2-o.y,gx-o.x);let best={clear:-1e9,x:gx,y:H/2};
-  for(const side of [0,-1,1])for(let k=-7;k<=7;k++){
-    const a=base+k*0.06,path=simKick(o.x,o.y,a,side,1.6);
+  const bc=bossOn(p.team)?p.ch:null,kl=!!(bc&&bc.curveL);
+  for(const side of [0,-1,1])for(let k=kl?-10:-7;k<=(kl?10:7);k++){
+    const a=base+k*0.06,path=simKick(o.x,o.y,a,side,1.6,bc,true);
     let cy=null,cut=path.length;
     for(let i=1;i<path.length;i++){const A=path[i-1],B=path[i];if((A.x-gx)*(B.x-gx)<=0&&A.x!==B.x){cy=A.y+(B.y-A.y)*(gx-A.x)/(B.x-A.x);cut=i+1;break;}}
     if(cy===null||cy<GY0+10||cy>GY1-10)continue;
-    const c=pathClear(path.slice(0,cut),opps);
+    // Kaito leans on his trademark left curl
+    const c=pathClear(path.slice(0,cut),opps)+(kl&&side<0?8:0);
     if(c>best.clear)best={clear:c,a,side,x:gx,y:cy};
   }
   return best;
@@ -1043,8 +1075,9 @@ function bestPass(p,mates,opps){
 }
 function bestShot(p,opps){
   const gx=oppGX(p.team);let best={clear:-1e9,x:gx,y:H/2};
+  const bc=bossOn(p.team)?p.ch:null,pw=(bc&&bc.shot||1)*(bc&&bc.kickF||1);
   for(const yy of [GY0+12,H/2-28,H/2+28,GY1-12]){
-    const d=hyp(gx-p.x,yy-p.y),tt=d/(KICK_V*0.92);let clear=1e9;
+    const d=hyp(gx-p.x,yy-p.y),tt=d/(KICK_V*0.92*pw);let clear=1e9;
     for(const o of opps){if(o.stunT>0)continue;const s=segDist(o.x,o.y,p.x,p.y,gx,yy);const react=o.idx===0?Math.max(0,s.t*tt-0.15)*runSpeed(o):s.t*tt*runSpeed(o)*0.8;clear=Math.min(clear,s.d-(PR+BR)-react);}
     if(clear>best.clear)best={clear,x:gx,y:yy};
   }
@@ -1063,15 +1096,18 @@ function holderAI(p,mates,opps){
     }
     return;
   }
-  const dG=hyp(gx-p.x,H/2-p.y);
-  if(dG<420&&p.possT>0.12){
+  const dG=hyp(gx-p.x,H/2-p.y),bc=bossOn(t)?p.ch:null;
+  // 最強: Gou fires from further out, Kaito a little further
+  if(dG<(bc&&bc.shot?540:bc&&bc.kickF?470:420)&&p.possT>0.12){
     const s=(LV.curve>0&&Math.random()<LV.curve)?bestShotCurve(p,opps):bestShot(p,opps);
     if(s.clear>10||(dG<150&&Math.random()<0.35)||(dG<240&&s.clear>-4&&Math.random()<0.2)){if(s.a!==undefined)aiKick(p,s.a+(Math.random()*2-1)*LV.shotErr,s.side,true);else aiKickTo(p,s.x,s.y,LV.shotErr,0,true);return;}
   }
   let press=1e9;for(const q of opps){if(q.stunT>0)continue;press=Math.min(press,hyp(q.x-p.x,q.y-p.y));}
   if(p.possT>0.2){
+    // 最強: Sion keeps the ball at full running speed, so he only lets go under real pressure
+    const drib=!!(bc&&bc.drib),pr=drib?58:78;
     const ps=bestPass(p,mates,opps);
-    if(ps&&((press<78&&ps.score>0.12)||(ps.score>0.72&&Math.random()<0.18))){doPass(p,ps,LV.passErr);return;}
+    if(ps&&((press<pr&&ps.score>0.12)||(!drib&&ps.score>0.72&&Math.random()<0.18))){doPass(p,ps,LV.passErr);return;}
   }
   let dx=gx-p.x,dy=H/2+(p.y-H/2)*0.35-p.y,n=hyp(dx,dy)||1;dx/=n;dy/=n;
   let ax=0,ay=0;
@@ -1221,6 +1257,9 @@ const LEVELS={
   3:{think:0.1,spd:1,steal:0.5,shotErr:0.06,passErr:0.03,slide:0.07,kReact:0.055,kErr:31,curve:0,magic:0},
   4:{think:0.085,spd:1,steal:0.58,shotErr:0.05,passErr:0.025,slide:0.085,kReact:0.045,kErr:26,curve:0.6,magic:1},
   5:{think:0.07,spd:1,steal:0.66,shotErr:0.04,passErr:0.018,slide:0.1,kReact:0.035,kErr:21,curve:1,magic:2}};
+// 最強 plays exactly like 強い; the difference is the squad and that it knows how to use each player's gift
+LEVELS[6]=Object.assign({},LEVELS[5],{boss:true});
+function bossOn(t){return t===1&&G.level===6;}
 function AIP(t){return LEVELS[t===1?G.level:3];}
 // level 1: players mostly hold their spots and only step toward a nearby ball
 function stillAI(t,ai){
@@ -1264,11 +1303,58 @@ function stopDrag(x,y){
   const b=G.ball;
   if(s.carry&&b.owner===p){b.x=clamp(p.x+Math.cos(p.dir)*(PR+BR+1),BR,W-BR);b.y=clamp(p.y+Math.sin(p.dir)*(PR+BR+1),BR,H-BR);}
 }
-function endStop(){if(!G.stop)return;const t=G.stop.team;G.stop=null;G.pathFrame=-1;emit('stopEnd',0,0,{team:t});}
+function endStop(){if(!G.stop)return;const t=G.stop.team,cs=G.stop.cpu;G.stop=null;G.pathFrame=-1;emit('stopEnd',0,0,{team:t});
+  if(cs){const p=teamOf(t)[cs.idx];p.tx=p.x;p.ty=p.y;if(cs.atk&&G.ball.owner===p)p.possT=Math.max(p.possT,1);G.aiT[t]=0;}}
+/* 最強: the CPU's Reiji uses 停 too - to jump in front of a white attacker closing on goal,
+   or to carry the ball past the defence into a clear shot. Once a match, like everyone else */
+function cpuStopCheck(){
+  if(!bossOn(1)||G.stopUsed[1]||G.stop||G.mode!=='play'||G.hum[1].active)return;
+  const b=G.ball,o=b.owner,r=teamOf(1).find(p=>p.ch&&p.ch.stop);
+  if(!r||r.stunT>0||r.slideT>0||r.recT>0||b.prot>0||G.time>MATCH_TIME-5)return;
+  const late=G.time<45&&G.score[1]<=G.score[0];
+  const free=(x,y,skip)=>{for(const q of G.players)if(q!==r&&q!==skip&&hyp(q.x-x,q.y-y)<PR*2+1)return false;return x>PR*2&&x<W-PR*2&&y>PR*2&&y<H-PR*2;};
+  let go=null;
+  if(o&&o.team!==1&&o.idx!==0){
+    // defence: step right into the carrier's path, ball-side, before he reaches shooting range
+    const gx=oppGX(0),dG=hyp(gx-b.x,H/2-b.y);
+    if(dG<(late?470:350)){
+      let cover=1e9;for(const q of teamOf(1))if(q!==r&&q.idx!==0&&q.stunT<=0&&q.slideT<=0)cover=Math.min(cover,hyp(q.x-b.x,q.y-b.y));
+      const ux=(gx-b.x)/dG,uy=(H/2-b.y)/dG,sx=b.x+ux*(PR+BR+1),sy=b.y+uy*(PR+BR+1),dR=hyp(sx-r.x,sy-r.y);
+      if(cover>PR*2.6&&dR>PR*2&&dR<=STOP_R+6&&Math.random()<0.6)go={x:sx,y:sy,dir:Math.atan2(b.y-sy,b.x-sx),atk:false};
+    }
+  }else if(o===r){
+    // attack: carry the ball into the spot with the clearest shot
+    const gx=oppGX(1),dG=hyp(gx-r.x,H/2-r.y),opps=teamOf(0);
+    if(dG>140&&dG<(late?600:480)){
+      const here=bestShot(r,opps).clear;let best=null;
+      for(let k=0;k<32;k++){
+        const an=k/32*Math.PI*2;
+        for(const rr of [STOP_R*0.55,STOP_R*0.8,STOP_R]){
+          const x=r.x+Math.cos(an)*rr,y=r.y+Math.sin(an)*rr;if(!free(x,y))continue;
+          const d2=hyp(gx-x,H/2-y);if(d2<90)continue;
+          const sc=bestShot({x,y,team:1,ch:r.ch},opps).clear-d2*0.04;
+          if(!best||sc>best.sc)best={x,y,sc,clear:sc+d2*0.04};
+        }
+      }
+      if(best&&best.clear>14&&best.clear>here+18)go={x:best.x,y:best.y,dir:Math.atan2(H/2-best.y,gx-best.x),atk:true};
+    }
+  }
+  if(!go)return;
+  G.stopUsed[1]=true;
+  G.stop={team:1,t:STOP_T,idx:r.idx,ox:r.x,oy:r.y,carry:b.owner===r,cpu:{idx:r.idx,tx:go.x,ty:go.y,dir:go.dir,atk:go.atk,t:0}};
+  emit('stop',r.x,r.y,{team:1});
+}
+// the CPU's drag plays out like a person's: a beat to show the zone, a smooth glide, a short hold, then play on
+function cpuStopRun(dt){
+  const s=G.stop,c=s.cpu,p=teamOf(s.team)[c.idx];c.t+=dt;
+  const f=clamp((c.t-0.7)/0.85,0,1),e=f*f*(3-2*f);
+  if(c.t>0.7){p.dir=c.dir;stopDrag(s.ox+(c.tx-s.ox)*e,s.oy+(c.ty-s.oy)*e);}
+  if(c.t>2.0)endStop();
+}
 
 /* ---- main step ---- */
 function step(dt){
-  if(G.stop){G.stop.t-=dt;if(G.stop.t<=0)endStop();return;}
+  if(G.stop){G.stop.t-=dt;if(G.stop.cpu)cpuStopRun(dt);if(G.stop&&G.stop.t<=0)endStop();return;}
   G.frame++;
   const b=G.ball;
   if(G.mode==='play'){G.time-=dt;if(G.time<=0){G.time=0;G.mode='end';G.endT=0;emit('end',0,0);}}
@@ -1310,7 +1396,7 @@ function step(dt){
   if(th0||th1){
     G.defer=true;G.pend.length=0;
     if(th0){G.aiT[0]+=AIP(0).think;aiTeam(0);}
-    if(th1){G.aiT[1]+=AIP(1).think;aiTeam(1);cpuMagic();}
+    if(th1){G.aiT[1]+=AIP(1).think;aiTeam(1);cpuMagic();cpuStopCheck();}
     G.defer=false;for(const f of G.pend)f();G.pend.length=0;
   }
   keeperTrack();
@@ -1922,7 +2008,7 @@ const STARS=n=>'★'.repeat(n)+'☆'.repeat(5-n);
 function resultTag(){
   const el=$('rLv');el.textContent='';
   if(NET.mode!=='off')el.append('オンライン対戦');
-  else{el.append('CPUの強さ ');const b=document.createElement('b');b.textContent=STARS(G.level);el.append(b);}
+  else{el.append('CPUの強さ ');const b=document.createElement('b');b.textContent=G.level===6?'最強':STARS(G.level);el.append(b);}
   const c=G.chars[G.local];if(c)el.append('　キャラ：'+c.name);
 }
 function showResult(){
@@ -1932,7 +2018,12 @@ function showResult(){
   $('f0').textContent=G.score[0];$('f1').textContent=G.score[1];
   resultTag();
   const guest=NET.mode==='guest';
-  bAgain.hidden=guest;rNote.hidden=!guest;rNote.textContent=guest?'ホストが次の試合を始めるのを待っています':'';
+  bAgain.hidden=guest;rNote.hidden=!guest;rNote.textContent=guest?'ホストが次の試合を始めるのを待っています':'';rNote.classList.remove('unlock');
+  // beating 強い by two or more unlocks 最強
+  if(NET.mode==='off'&&G.level===5&&a-c>=2&&!bossUnlocked){
+    bossUnlocked=true;bossJust=true;try{localStorage.setItem('bossUnlocked','1');}catch(e){}
+    rNote.hidden=false;rNote.classList.add('unlock');rNote.textContent='「最強」が解放された！ CPUの強さで選べます';sDecide();
+  }
   matchUI=false;controls.hidden=true;ovResult.hidden=false;
   releaseInputs();
 }
@@ -1965,13 +2056,41 @@ function enterMatchUI(small){
 function charLine(){const n=c=>c?c.name:'なし';return G.chars[0]||G.chars[1]?'白：'+n(G.chars[0])+'　赤：'+n(G.chars[1]):'';}
 
 /* ---- single play: level → character (pick or roulette) → match ---- */
-let chosenLevel=3,rouletteOn=false,lastCfg=null,rlTimer=0,lastPick=-1;
-try{const v=+localStorage.getItem('cpuLevel');if(v>=1&&v<=5)chosenLevel=v;rouletteOn=localStorage.getItem('chRoulette')==='1';}catch(e){}
+let chosenLevel=3,rouletteOn=false,lastCfg=null,rlTimer=0,lastPick=-1,bossUnlocked=false,bossJust=false;
+try{bossUnlocked=localStorage.getItem('bossUnlocked')==='1';const v=+localStorage.getItem('cpuLevel');if(v>=1&&v<=(bossUnlocked?6:5))chosenLevel=v;rouletteOn=localStorage.getItem('chRoulette')==='1';}catch(e){}
+// two crossed chains and a padlock over the locked 最強 card
+(function(){
+  const r=v=>Math.round(v*10)/10;let g='';
+  for(const [x0,y0,x1,y1] of [[-8,14,108,90],[-8,90,108,14]]){
+    const ang=Math.atan2(y1-y0,x1-x0)*180/Math.PI,n=Math.round(Math.hypot(x1-x0,y1-y0)/8.2);
+    for(let i=0;i<=n;i++){
+      const x=x0+(x1-x0)*i/n,y=y0+(y1-y0)*i/n,tf='rotate('+r(ang)+' '+r(x)+' '+r(y)+')';
+      g+=i%2?'<rect x="'+r(x-6)+'" y="'+r(y-1.7)+'" width="12" height="3.4" rx="1.7" fill="#8e98a3" stroke="#3b434c" stroke-width=".8" transform="'+tf+'"/>'
+            :'<rect x="'+r(x-6.2)+'" y="'+r(y-3.7)+'" width="12.4" height="7.4" rx="3.7" fill="none" stroke="#b9c2cb" stroke-width="2.1" transform="'+tf+'"/><rect x="'+r(x-6.2)+'" y="'+r(y-3.7)+'" width="12.4" height="7.4" rx="3.7" fill="none" stroke="#3b434c" stroke-width=".6" transform="'+tf+'"/>';
+    }
+  }
+  g+='<g transform="translate(0 -9)"><path d="M44 46v-6a6 6 0 0 1 12 0v6" fill="none" stroke="#c9d1d9" stroke-width="2.6"/><rect x="40.5" y="45" width="19" height="15" rx="2.5" fill="#d9a62e" stroke="#5a4110" stroke-width="1"/><circle cx="50" cy="51" r="1.9" fill="#3a2a08"/><rect x="49.2" y="51.5" width="1.6" height="4" fill="#3a2a08"/></g>';
+  $('bossLock').innerHTML='<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">'+g+'</svg>';
+})();
+const lvBoss=$('lvBoss');
+lvBoss.addEventListener('animationend',e=>{if(e.animationName==='lvShake')lvBoss.classList.remove('shake');});
+function bossCard(){
+  lvBoss.classList.toggle('locked',!bossUnlocked&&!lvBoss.classList.contains('breaking'));
+  lvBoss.setAttribute('aria-disabled',bossUnlocked?'false':'true');
+  lvBoss.setAttribute('aria-label',bossUnlocked?'最強':'最強（ロック中：「強い」に2点差以上で勝つと解放）');
+  $('bossSub').textContent=bossUnlocked?'キャラ4人の最強チーム':'「強い」に2点差以上で勝つと解放';
+}
 function setSwitch(el,valEl,on){el.setAttribute('aria-checked',on?'true':'false');valEl.textContent=on?'あり':'なし';}
 function showLevels(){
   audioInit();hideOverlays();ovLevel.hidden=false;
   for(const b of ovLevel.querySelectorAll('.lv'))b.classList.toggle('last',+b.dataset.lv===chosenLevel);
-  setSwitch(bRoulette,$('rlV'),rouletteOn);
+  setSwitch(bRoulette,$('rlV'),rouletteOn);$('lvHint').textContent='';
+  if(bossJust){
+    // first visit after unlocking: the chains drop off
+    bossJust=false;bossUnlocked=false;bossCard();bossUnlocked=true;
+    setTimeout(()=>{lvBoss.classList.remove('locked');lvBoss.classList.add('breaking');sDecide();
+      setTimeout(()=>{lvBoss.classList.remove('breaking');bossCard();},800);},450);
+  }else bossCard();
 }
 function drawPortrait(cvp,c){
   const g=cvp.getContext('2d'),w=cvp.width,h=cvp.height;
@@ -2016,8 +2135,10 @@ function startMatch(cfg){
   cfg=cfg||lastCfg||{ch:null,mode:'pick'};lastCfg=cfg;clearTimeout(rlTimer);
   try{localStorage.setItem('cpuLevel',String(chosenLevel));}catch(e){}
   audioInit();tryFullscreen();
+  if(chosenLevel===6&&!bossUnlocked)chosenLevel=5;
   resetMatch(true,chosenLevel,[cfg.ch||null,null],false);G.local=0;G.mode='play';
-  enterMatchUI(cfg.ch?cfg.ch.name+' がチームに参戦':'');
+  const mine=cfg.ch?cfg.ch.name+' がチームに参戦':'';
+  enterMatchUI(G.level===6?'最強チーム：'+G.squad[1].map(c=>c.name).join('・')+(mine?'　'+mine:''):mine);
 }
 function tryFullscreen(){
   try{
@@ -2343,7 +2464,9 @@ $('bOnline').addEventListener('click',showOnline);
 bAgain.addEventListener('click',()=>{if(NET.mode==='host')hostStart();else if(lastCfg&&lastCfg.mode==='roulette')showRoulette();else startMatch(lastCfg);});
 $('bLvBack').addEventListener('click',toTitle);
 bRoulette.addEventListener('click',()=>{rouletteOn=!rouletteOn;setSwitch(bRoulette,$('rlV'),rouletteOn);try{localStorage.setItem('chRoulette',rouletteOn?'1':'0');}catch(e){}});
-for(const b of ovLevel.querySelectorAll('.lv'))b.addEventListener('click',()=>{chosenLevel=+b.dataset.lv;try{localStorage.setItem('cpuLevel',String(chosenLevel));}catch(e){}if(rouletteOn)showRoulette();else showChars();});
+for(const b of ovLevel.querySelectorAll('.lv'))b.addEventListener('click',()=>{
+  if(b===lvBoss&&!bossUnlocked){lvBoss.classList.remove('shake');void lvBoss.offsetWidth;lvBoss.classList.add('shake');sTick();$('lvHint').textContent='「最強」は「強い」に2点差以上で勝つと解放されます';return;}
+  chosenLevel=+b.dataset.lv;try{localStorage.setItem('cpuLevel',String(chosenLevel));}catch(e){}if(rouletteOn)showRoulette();else showChars();});
 $('bNoChar').addEventListener('click',()=>{lastPick=-1;startMatch({ch:null,mode:'pick'});});
 $('bChBack').addEventListener('click',showLevels);
 $('bOnBack').addEventListener('click',toTitle);
