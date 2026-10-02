@@ -1,0 +1,36 @@
+{
+  "name": "4on4 ミニサッカー",
+  "short_name": "ミニサッカー",
+  "description": "スマホ横画面の4on4ミニサッカー。CPU対戦とオンライン対戦。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "orientation": "landscape",
+  "background_color": "#0a111c",
+  "theme_color": "#0a111c",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
